@@ -1,16 +1,42 @@
 package edu.uw.sudoku_solver.server;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 
-import com.sun.net.httpserver.*;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
 
+/**
+ * The server for the webpage Sudoku Solver. It sends the webpage and return a
+ * solved board when a unsolved is sent as an api request
+ * 
+ * @author Eli Orona
+ *
+ */
 public class Server {
-
+	/**
+	 * The port for the server to run on.
+	 */
 	private static final int PORT = Integer.parseInt(System.getenv().getOrDefault("PORT", "8000"));
 
+	/**
+	 * Constructor for the Server
+	 */
+	public Server() {
+
+	}
+
+	/**
+	 * The {@link HttpServer} for the server. Allows closing the server in a
+	 * seperate method.
+	 */
 	private HttpServer server;
 
+	/**
+	 * Creates and starts the server with all paths registered. If this server has
+	 * already been started, an {@link IllegalArgumentException} is thrown
+	 */
 	public void start() {
 		// If the server has already started throw an exception
 		if (server != null) {
@@ -21,9 +47,16 @@ public class Server {
 			// Create a new server
 			server = HttpServer.create(new InetSocketAddress(PORT), 0);
 			// Add the root context
-			server.createContext("/", t -> {
-				t.sendResponseHeaders(200, 1);
-				t.getResponseBody().write('a');
+			server.createContext("/", httpExchange -> {
+				sendWebpageFile(httpExchange, "index.html", "text/html; charset=utf-8");
+			});
+
+			server.createContext("/css/", httpExchange -> {
+				sendWebpageFile(httpExchange, getFilePath(httpExchange.getRequestURI().getPath(), "css"), "");
+			});
+
+			server.createContext("/js/", httpExchange -> {
+				sendWebpageFile(httpExchange, getFilePath(httpExchange.getRequestURI().getPath(), "js"), "");
 			});
 
 			// Start the server
@@ -34,6 +67,42 @@ public class Server {
 		}
 	}
 
+	/**
+	 * Returns the package path for the requested file
+	 * 
+	 * @param path           The path from the webpage
+	 * @param httpPathHeader The package path after
+	 *                       {@code edu.uw.sudoku_solver.webpage}
+	 * @return The corrected path
+	 */
+	private static String getFilePath(String path, String httpPathHeader) {
+		return httpPathHeader + path.substring(("/" + httpPathHeader + "/").length() - 1);
+	}
+
+	/**
+	 * Sends the file from the package {@code edu.uw.sudoku_solver.webpage} through
+	 * the {@link HttpExchange}
+	 * 
+	 * @param httpExchange The {@link HttpExchange} to send the file
+	 * @param fileName     The name of the file
+	 * @param contentType  The contentType (use "" instead of null for no type)
+	 */
+	private static void sendWebpageFile(HttpExchange httpExchange, String fileName, String contentType) {
+		httpExchange.getResponseHeaders().set("Content-Type", contentType);
+		InputStream index = Server.class.getResourceAsStream("/edu/uw/sudoku_solver/webpage/" + fileName);
+		try {
+			byte[] bytes = index.readAllBytes();
+			httpExchange.sendResponseHeaders(200, bytes.length);
+			httpExchange.getResponseBody().write(bytes);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		httpExchange.close();
+	}
+
+	/**
+	 * Ends the server. All current requests have 1 second to finish.
+	 */
 	public void end() {
 		// End the server and wait one second for any final requests
 		server.stop(1);
