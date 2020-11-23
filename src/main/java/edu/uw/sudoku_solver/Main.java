@@ -11,7 +11,8 @@ public class Main {
 		server.start();
 
 		// Wait for input on console to end program
-		System.in.read();
+		System.out.print("Press enter to end program");
+		System.in.read(); // this is a blocking action
 
 		// End the server and end the program
 		server.end();

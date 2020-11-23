@@ -10,6 +10,10 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
+run {
+    standardInput = System.in
+}
+
 dependencies {
     testCompile 'junit:junit:4.12'
 }
