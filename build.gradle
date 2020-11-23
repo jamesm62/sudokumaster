@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+mainClassName = 'edu.uw.sudoku_solver.Main'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+}
+
+repositories {
+    jcenter()
+}
