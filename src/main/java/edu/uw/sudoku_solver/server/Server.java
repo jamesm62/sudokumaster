@@ -52,32 +52,19 @@ public class Server {
 			});
 
 			server.createContext("/css/", httpExchange -> {
-				sendWebpageFile(httpExchange,
-						getFilePath(httpExchange.getRequestURI().getPath(), "css"), "");
+				sendWebpageFile(httpExchange, httpExchange.getRequestURI().getPath(), "");
 			});
 
 			server.createContext("/js/", httpExchange -> {
-				sendWebpageFile(httpExchange, getFilePath(httpExchange.getRequestURI().getPath(), "js"),
-						"");
+				sendWebpageFile(httpExchange, httpExchange.getRequestURI().getPath(), "");
 			});
 
 			// Start the server
 			server.start();
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.exit(-1);
 		}
-	}
-
-	/**
-	 * Returns the package path for the requested file
-	 * 
-	 * @param path           The path from the webpage
-	 * @param httpPathHeader The package path after
-	 *                       {@code edu.uw.sudoku_solver.webpage}
-	 * @return The corrected path
-	 */
-	private static String getFilePath(String path, String httpPathHeader) {
-		return httpPathHeader + path.substring(("/" + httpPathHeader + "/").length() - 1);
 	}
 
 	/**
