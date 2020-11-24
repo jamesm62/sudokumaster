@@ -18,7 +18,7 @@ public class Server {
 	/**
 	 * The port for the server to run on.
 	 */
-	private static final int PORT = Integer.parseInt(System.getenv().getOrDefault("PORT", "8000"));
+	public static final int PORT = Integer.parseInt(System.getenv().getOrDefault("PORT", "8000"));
 
 	/**
 	 * Constructor for the Server
@@ -52,16 +52,17 @@ public class Server {
 			});
 
 			server.createContext("/css/", httpExchange -> {
-				sendWebpageFile(httpExchange, getFilePath(httpExchange.getRequestURI().getPath(), "css"), "");
+				sendWebpageFile(httpExchange,
+						getFilePath(httpExchange.getRequestURI().getPath(), "css"), "");
 			});
 
 			server.createContext("/js/", httpExchange -> {
-				sendWebpageFile(httpExchange, getFilePath(httpExchange.getRequestURI().getPath(), "js"), "");
+				sendWebpageFile(httpExchange, getFilePath(httpExchange.getRequestURI().getPath(), "js"),
+						"");
 			});
 
 			// Start the server
 			server.start();
-			System.out.println("Server running on port: " + PORT);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -87,9 +88,11 @@ public class Server {
 	 * @param fileName     The name of the file
 	 * @param contentType  The contentType (use "" instead of null for no type)
 	 */
-	private static void sendWebpageFile(HttpExchange httpExchange, String fileName, String contentType) {
+	private static void sendWebpageFile(HttpExchange httpExchange, String fileName,
+			String contentType) {
 		httpExchange.getResponseHeaders().set("Content-Type", contentType);
-		InputStream index = Server.class.getResourceAsStream("/edu/uw/sudoku_solver/webpage/" + fileName);
+		InputStream index = Server.class
+				.getResourceAsStream("/edu/uw/sudoku_solver/webpage/" + fileName);
 		try {
 			byte[] bytes = index.readAllBytes();
 			httpExchange.sendResponseHeaders(200, bytes.length);

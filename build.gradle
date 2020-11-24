@@ -15,6 +15,12 @@ run {
     standardInput = System.in
 }
 
+test {
+    testLogging {
+        events "passed", "failed", "standard-out"
+    }
+}
+
 dependencies {
     testCompile 'junit:junit:4.12'
 }

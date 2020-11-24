@@ -9,6 +9,7 @@ public class Main {
 		// Create a new server and start it
 		Server server = new Server();
 		server.start();
+		System.out.println("Server running on port: " + Server.PORT);
 
 		// Wait for input on console to end program
 		System.out.print("Press enter to end program");
