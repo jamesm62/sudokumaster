@@ -25,8 +25,12 @@ function solve(){
     for (var i=0; i<9; i++){
         board[i] = [];
         for (var j=0; j<9; j++){
-            board[i][j] = 0;
-            board[i][j] = inputboard.rows[i].cells[j].childNodes[0].value;
+            let inputvalue = parseInt(inputboard.rows[i].cells[j].childNodes[0].value);
+            if (isNaN(inputvalue)){
+                board[i][j] = 0;
+            } else {
+                board[i][j] = inputvalue;
+            }
         }
     }
     console.log(board);
