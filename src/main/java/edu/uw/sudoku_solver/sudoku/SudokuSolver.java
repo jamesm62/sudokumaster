@@ -71,6 +71,7 @@ public class SudokuSolver {
 						 {0,0,9,3,0,0,0,7,4},
 						 {0,4,0,0,5,0,0,3,6},
 						 {7,0,3,0,1,8,0,0,0}};
+		
 		SudokuSolver solver = new SudokuSolver(board);
 		
 		int[][] solution = solver.solve();
