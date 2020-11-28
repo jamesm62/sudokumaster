@@ -2,12 +2,31 @@ body {
 	background-color: #555555;
 }
 
-.table {
+#board {
+	border: 3px solid black;
 	border-collapse: collapse;
-	table-layout: fixed;
-	width: 50px;
+	width: 450px; 
 }
 
 td {
-	border: 1px white;
+	padding: 5px;
+	margin: 20 px;
+  	border: 1px solid;
+}
+
+td:nth-child(3n){
+	border-right: 3px solid;
+}
+
+tr:nth-child(3n){
+	border-bottom: 3px solid;
+}
+
+.numinput {
+	width: 36pt;
+    font-size: 26pt;
+	background: transparent;
+	border: none;
+	text-align: center;
+	outline: none;
 }
