@@ -33,5 +33,18 @@ function solve(){
             }
         }
     }
-    console.log(board);
+    fetch("api/solve/", {method: 'POST', body:JSON.stringify({"board":board})}).then(res => res.json())
+    .then(json => {
+    	if(json.err) {
+    		throw json.err;
+    	}
+    
+    	let solved = json.board;
+    	console.log(json);
+    	for (var i=0; i<9; i++){
+	        for (var j=0; j<9; j++){
+	            inputboard.rows[i].cells[j].childNodes[0].value = solved[i][j];
+	        }
+        }
+    }).catch(e => console.log(e));
 }

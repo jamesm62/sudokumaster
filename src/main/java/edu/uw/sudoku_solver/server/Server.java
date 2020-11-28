@@ -4,8 +4,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
+
+import edu.uw.sudoku_solver.sudoku.SudokuSolver;
 
 /**
  * The server for the webpage Sudoku Solver. It sends the webpage and return a
@@ -24,7 +31,6 @@ public class Server {
 	 * Constructor for the Server
 	 */
 	public Server() {
-
 	}
 
 	/**
@@ -57,6 +63,44 @@ public class Server {
 
 			server.createContext("/js/", httpExchange -> {
 				sendWebpageFile(httpExchange, httpExchange.getRequestURI().getPath(), "");
+			});
+
+			server.createContext("/api/solve/", httpExchange -> {
+				try {
+					String body = new String(httpExchange.getRequestBody().readAllBytes());
+
+					JsonObject json = JsonParser.parseString(body).getAsJsonObject();
+
+					JsonArray jsonBoardArray = json.get("board").getAsJsonArray();
+					int[][] boardArray = new int[9][9];
+					for (int i = 0; i < 9; i++) {
+						for (int j = 0; j < 9; j++) {
+							boardArray[i][j] = jsonBoardArray.get(i).getAsJsonArray().get(j).getAsInt();
+						}
+					}
+
+					SudokuSolver solver = new SudokuSolver(boardArray);
+					int[][] solution = solver.solve();
+					Gson builder = new GsonBuilder().setPrettyPrinting().create();
+					String returnValue = "{\"board\":" + builder.toJson(solution, solution.getClass())
+							+ "}";
+
+					try {
+						byte[] bytes = returnValue.getBytes();
+						httpExchange.sendResponseHeaders(200, bytes.length);
+						httpExchange.getResponseBody().write(bytes);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} catch (Exception exception) {
+					try {
+						byte[] bytes = ("{\"err\":\"Error solving board\"}").getBytes();
+						httpExchange.sendResponseHeaders(200, bytes.length);
+						httpExchange.getResponseBody().write(bytes);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 			});
 
 			// Start the server
