@@ -131,59 +131,44 @@ public class SudokuSolver {
 	}
 
 	public static void main(String[] args) {
-		int[][] board = {{0,0,0,2,6,0,7,0,1},
-				 {6,8,0,0,7,0,0,9,0},
-				 {1,9,0,0,0,4,5,0,0},
-				 {8,2,0,1,0,0,0,4,0},
-				 {0,0,4,6,0,2,9,0,0},
-				 {0,5,0,0,0,3,0,2,8},
-				 {0,0,9,3,0,0,0,7,4},
-				 {0,4,0,0,5,0,0,3,6},
-				 {7,0,3,0,1,8,0,0,0}};
-		
+		int[][] board = { { 0, 0, 0, 2, 6, 0, 7, 0, 1 }, 
+				{ 6, 8, 0, 0, 7, 0, 0, 9, 0 },
+				{ 1, 9, 0, 0, 0, 4, 5, 0, 0 }, 
+				{ 8, 2, 0, 1, 0, 0, 0, 4, 0 },
+				{ 0, 0, 4, 6, 0, 2, 9, 0, 0 }, 
+				{ 0, 5, 0, 0, 0, 3, 0, 2, 8 },
+				{ 0, 0, 9, 3, 0, 0, 0, 7, 4 }, 
+				{ 0, 4, 0, 0, 5, 0, 0, 3, 6 },
+				{ 7, 0, 3, 0, 1, 8, 0, 0, 0 } };
+
 		SudokuSolver solver = new SudokuSolver(board);
-		
+
 		int[][] solution = solver.solve();
-		
+
 		if (solution != null) {
-			for (int i = 0; i < 9; i++) {
-				for (int e = 0; e < 9; e++) {
-					System.out.print(solution[i][e] + (e == 8 ? "" : ","));
-				}
-				System.out.println();
-			}
+			System.out.println(new SudokuBoard(solution));
 		} else {
 			System.out.println("No solution");
 		}
-		
+
 		System.out.println();
-		
+
 		int[][] random = solver.getRandomPuzzle(8);
-		
+
 		if (random != null) {
-			for (int i = 0; i < 9; i++) {
-				for (int e = 0; e < 9; e++) {
-					System.out.print(random[i][e] + (e == 8 ? "" : ","));
-				}
-				System.out.println();
-			}
+			System.out.println(new SudokuBoard(random));
 		} else {
 			System.out.println("No solution");
 		}
-		
+
 		System.out.println();
-		
+
 		SudokuSolver randomSolver = new SudokuSolver(random);
-		
+
 		int[][] randomSolution = randomSolver.solve();
-		
+
 		if (randomSolution != null) {
-			for (int i = 0; i < 9; i++) {
-				for (int e = 0; e < 9; e++) {
-					System.out.print(randomSolution[i][e] + (e == 8 ? "" : ","));
-				}
-				System.out.println();
-			}
+			System.out.println(new SudokuBoard(randomSolution));
 		} else {
 			System.out.println("No solution");
 		}
