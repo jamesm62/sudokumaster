@@ -5,7 +5,6 @@ body {
 #board {
 	border: 3px solid black;
 	border-collapse: collapse;
-	width: 450px; 
 }
 
 td {
@@ -29,4 +28,11 @@ tr:nth-child(3n){
 	border: none;
 	text-align: center;
 	outline: none;
+}
+
+.center {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
