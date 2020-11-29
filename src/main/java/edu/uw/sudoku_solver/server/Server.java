@@ -12,6 +12,7 @@ import com.google.gson.JsonParser;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
+import edu.uw.sudoku_solver.sudoku.SudokuBoard;
 import edu.uw.sudoku_solver.sudoku.SudokuSolver;
 
 /**
@@ -68,7 +69,6 @@ public class Server {
 			server.createContext("/api/solve/", httpExchange -> {
 				try {
 					String body = new String(httpExchange.getRequestBody().readAllBytes());
-
 					JsonObject json = JsonParser.parseString(body).getAsJsonObject();
 
 					JsonArray jsonBoardArray = json.get("board").getAsJsonArray();
@@ -79,8 +79,14 @@ public class Server {
 						}
 					}
 
+					System.out.println(new SudokuBoard(boardArray));
 					SudokuSolver solver = new SudokuSolver(boardArray);
 					int[][] solution = solver.solve();
+
+					if (solution == null) {
+						throw new Exception();
+					}
+
 					Gson builder = new GsonBuilder().setPrettyPrinting().create();
 					String returnValue = "{\"board\":" + builder.toJson(solution, solution.getClass())
 							+ "}";

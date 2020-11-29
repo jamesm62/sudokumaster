@@ -28,9 +28,13 @@ public class SudokuSolver {
 		for (int row = 0; row < 9; row++) {
 			for (int col = 0; col < 9; col++) {
 				if (puzzle[row][col] != 0) {
-					rows.get(row).add(puzzle[row][col]);
-					cols.get(col).add(puzzle[row][col]);
-					squares.get(row/3*3 + col/3).add(puzzle[row][col]);
+					boolean notDuplicated = rows.get(row).add(puzzle[row][col])
+							&& cols.get(col).add(puzzle[row][col])
+							&& squares.get(row / 3 * 3 + col / 3).add(puzzle[row][col]);
+
+					if (!notDuplicated) {
+						return null;
+					}
 				}
 			}
 		}
