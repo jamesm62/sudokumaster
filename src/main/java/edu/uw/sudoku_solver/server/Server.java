@@ -8,11 +8,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
-import edu.uw.sudoku_solver.sudoku.SudokuBoard;
 import edu.uw.sudoku_solver.sudoku.SudokuSolver;
 
 /**
@@ -27,6 +25,8 @@ public class Server {
 	 * The port for the server to run on.
 	 */
 	public static final int PORT = Integer.parseInt(System.getenv().getOrDefault("PORT", "8000"));
+
+	public static final Gson builder = new GsonBuilder().setPrettyPrinting().create();
 
 	/**
 	 * Constructor for the Server
@@ -53,25 +53,38 @@ public class Server {
 		try {
 			// Create a new server
 			server = HttpServer.create(new InetSocketAddress(PORT), 0);
+
 			// Add the root context
 			server.createContext("/", httpExchange -> {
 				sendWebpageFile(httpExchange, "index.html", "text/html; charset=utf-8");
 			});
 
+			server.createContext("/solve", httpExchange -> {
+				sendWebpageFile(httpExchange, "solver/solver.html", "text/html;charset=utf-8");
+			});
+
+			server.createContext("/generate", httpExchange -> {
+				sendWebpageFile(httpExchange, "generator/generator.html", "text/html;charset=utf-8");
+			});
+
+			server.createContext("/versus", httpExchange -> {
+				sendWebpageFile(httpExchange, "versus/versus.html", "text/html;charset=utf-8");
+			});
+
 			server.createContext("/css/", httpExchange -> {
-				sendWebpageFile(httpExchange, httpExchange.getRequestURI().getPath(), "");
+				sendWebpageFile(httpExchange, httpExchange.getRequestURI().getPath(),
+						"text/css;charset=utf-8");
 			});
 
 			server.createContext("/js/", httpExchange -> {
-				sendWebpageFile(httpExchange, httpExchange.getRequestURI().getPath(), "");
+				sendWebpageFile(httpExchange, httpExchange.getRequestURI().getPath(),
+						"text/javascript;charset=utf-8");
 			});
 
-			server.createContext("/api/solve/", httpExchange -> {
-				try {
-					String body = new String(httpExchange.getRequestBody().readAllBytes());
-					JsonObject json = JsonParser.parseString(body).getAsJsonObject();
-
-					JsonArray jsonBoardArray = json.get("board").getAsJsonArray();
+			server.createContext("/api/solve/", new ServerApiHandler() {
+				@Override
+				public String getResponse(JsonObject request) throws Exception {
+					JsonArray jsonBoardArray = request.get("board").getAsJsonArray();
 					int[][] boardArray = new int[9][9];
 					for (int i = 0; i < 9; i++) {
 						for (int j = 0; j < 9; j++) {
@@ -79,7 +92,6 @@ public class Server {
 						}
 					}
 
-					System.out.println(new SudokuBoard(boardArray));
 					SudokuSolver solver = new SudokuSolver(boardArray);
 					int[][] solution = solver.solve();
 
@@ -87,25 +99,21 @@ public class Server {
 						throw new Exception();
 					}
 
-					Gson builder = new GsonBuilder().setPrettyPrinting().create();
-					String returnValue = "{\"board\":" + builder.toJson(solution, solution.getClass())
-							+ "}";
+					return "{\"board\":" + builder.toJson(solution, solution.getClass()) + "}";
+				}
+			});
 
-					try {
-						byte[] bytes = returnValue.getBytes();
-						httpExchange.sendResponseHeaders(200, bytes.length);
-						httpExchange.getResponseBody().write(bytes);
-					} catch (IOException e) {
-						e.printStackTrace();
+			server.createContext("/api/generate/", new ServerApiHandler() {
+				@Override
+				public String getResponse(JsonObject request) throws Exception {
+					SudokuSolver solver = new SudokuSolver(null);
+					int[][] solution = solver.getRandomPuzzle(request.get("difficulty").getAsInt());
+
+					if (solution == null) {
+						throw new Exception();
 					}
-				} catch (Exception exception) {
-					try {
-						byte[] bytes = ("{\"err\":\"Error solving board\"}").getBytes();
-						httpExchange.sendResponseHeaders(200, bytes.length);
-						httpExchange.getResponseBody().write(bytes);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+
+					return "{\"board\":" + builder.toJson(solution, solution.getClass()) + "}";
 				}
 			});
 
