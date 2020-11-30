@@ -15,6 +15,7 @@ function solve(){
     fetch("api/solve/", {method: 'POST', body:JSON.stringify({"board":board})}).then(res => res.json())
     .then(json => {
     	if(json.err) {
+    		alert("Could not solve board");
     		throw json.err;
     	}
     
