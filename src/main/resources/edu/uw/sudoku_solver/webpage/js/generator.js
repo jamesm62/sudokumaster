@@ -1,5 +1,14 @@
 function generate(){
-    fetch("api/generate/", {method: 'POST', body:JSON.stringify({difficulty:8,seed:1234})}).then(res => res.json())
+    let seedInput = document.getElementById("seed");
+    let difficultyInput = document.getElementById("difficulty");
+
+
+    let request = {difficulty:difficultyInput.value != "" ? parseInt(difficultyInput.value):8};
+    if(seedInput.value != "") {
+        request.seed = parseInt(seedInput.value);
+    }
+
+    fetch("api/generate/", {method: 'POST', body:JSON.stringify(request)}).then(res => res.json())
     .then(json => {
     	if(json.err) {
     		throw json.err;
@@ -10,6 +19,10 @@ function generate(){
 	        for (var j=0; j<9; j++){
                 var cursquare = inputboard.rows[i].cells[j];
                 cursquare.childNodes[0].value = (solved[i][j] == 0 ? "" : solved[i][j]);
+                if(solved[i][j] != 0) {
+                    cursquare.style.backgroundColor = "gray";
+                    cursquare.childNodes[0].readOnly = true;
+                }
 	        }
         }
     }).catch(e => console.log(e));

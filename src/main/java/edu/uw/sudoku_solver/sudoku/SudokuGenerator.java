@@ -1,3 +1,5 @@
+package edu.uw.sudoku_solver.sudoku;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,7 +21,7 @@ public class SudokuGenerator {
 			cols.add(new HashSet<Integer>());
 			squares.add(new HashSet<Integer>());
 		}
-		return getRandomPuzzle(0, 0, rows, cols, squares, randomPuzzle, (double)difficulty/10.0, (int)Math.sqrt((double)size), difficultyAssessor, numGenerator);
+		return getRandomPuzzle(0, 0, rows, cols, squares, randomPuzzle, (double)difficulty/20.0 + 0.3, (int)Math.sqrt((double)size), difficultyAssessor, numGenerator);
 	}
 	
 	// helper method for getRandomPuzzle() that recursively constructs a random sudoku puzzle

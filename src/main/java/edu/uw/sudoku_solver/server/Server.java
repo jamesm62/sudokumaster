@@ -3,6 +3,7 @@ package edu.uw.sudoku_solver.server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
+import java.util.Random;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -11,6 +12,7 @@ import com.google.gson.JsonObject;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
+import edu.uw.sudoku_solver.sudoku.SudokuGenerator;
 import edu.uw.sudoku_solver.sudoku.SudokuSolver;
 
 /**
@@ -98,8 +100,7 @@ public class Server {
 						}
 					}
 
-					SudokuSolver solver = new SudokuSolver(boardArray);
-					int[][] solution = solver.solve();
+					int[][] solution = SudokuSolver.solve(boardArray);
 
 					if (solution == null) {
 						throw new Exception();
@@ -113,8 +114,8 @@ public class Server {
 			server.createContext("/api/generate/", new ServerApiHandler() {
 				@Override
 				public String getResponse(JsonObject request) throws Exception {
-					SudokuSolver solver = new SudokuSolver(null);
-					int[][] solution = solver.getRandomPuzzle(request.get("difficulty").getAsInt());
+					int seed = request.has("seed") ? request.get("seed").getAsInt() : (int) (Math.random() * 10000);
+					int[][] solution = SudokuGenerator.getRandomPuzzle(request.get("difficulty").getAsInt(), 9, new Random(seed), new Random(seed));
 
 					if (solution == null) {
 						throw new Exception();
