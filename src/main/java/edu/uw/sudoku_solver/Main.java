@@ -16,7 +16,8 @@ public class Main {
 		System.in.read(); // this is a blocking action
 
 		// End the server and end the program
-		server.end();
 		System.out.println("Program ending...");
+		server.end();
+		System.out.println("Program ended.");
 	}
 }

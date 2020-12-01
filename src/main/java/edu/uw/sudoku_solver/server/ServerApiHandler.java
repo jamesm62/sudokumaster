@@ -7,6 +7,10 @@ import com.google.gson.JsonParser;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
+/**
+ * A template for API requests to the server. It automatically parses the JSON Post request and handles sending the data
+ * and errors
+ */
 public abstract class ServerApiHandler implements HttpHandler {
 
 	@Override
@@ -36,6 +40,12 @@ public abstract class ServerApiHandler implements HttpHandler {
 		httpExchange.close();
 	}
 
+	/**
+	 * Get the response for the API call
+	 * @param request The JSON request for the call
+	 * @return The string to return to the client
+	 * @throws Exception Throw an exception if there are any issues with the request as this sends an error to the
+	 * client
+	 */
 	public abstract String getResponse(JsonObject request) throws Exception;
-
 }

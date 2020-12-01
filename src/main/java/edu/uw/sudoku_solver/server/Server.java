@@ -59,28 +59,34 @@ public class Server {
 				sendWebpageFile(httpExchange, "index.html", "text/html; charset=utf-8");
 			});
 
+			// Add the solve page
 			server.createContext("/solve", httpExchange -> {
 				sendWebpageFile(httpExchange, "solver/solver.html", "text/html;charset=utf-8");
 			});
 
+			// Add the generate page
 			server.createContext("/generate", httpExchange -> {
 				sendWebpageFile(httpExchange, "generator/generator.html", "text/html;charset=utf-8");
 			});
 
+			// add the versus page
 			server.createContext("/versus", httpExchange -> {
 				sendWebpageFile(httpExchange, "versus/versus.html", "text/html;charset=utf-8");
 			});
 
+			// Add CSS files
 			server.createContext("/css/", httpExchange -> {
 				sendWebpageFile(httpExchange, httpExchange.getRequestURI().getPath(),
 						"text/css;charset=utf-8");
 			});
 
+			// Add JS files
 			server.createContext("/js/", httpExchange -> {
 				sendWebpageFile(httpExchange, httpExchange.getRequestURI().getPath(),
 						"text/javascript;charset=utf-8");
 			});
 
+			// Create an API for solving boards
 			server.createContext("/api/solve/", new ServerApiHandler() {
 				@Override
 				public String getResponse(JsonObject request) throws Exception {
@@ -103,6 +109,7 @@ public class Server {
 				}
 			});
 
+			// Create an API for generating boards
 			server.createContext("/api/generate/", new ServerApiHandler() {
 				@Override
 				public String getResponse(JsonObject request) throws Exception {
