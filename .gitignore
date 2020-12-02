@@ -3,3 +3,6 @@
 /.project
 /.classpath
 /bin/
+/sudoku-solver.iml
+/sudoku-solver.ipr
+/sudoku-solver.iws

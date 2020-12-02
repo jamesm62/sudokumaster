@@ -5,13 +5,12 @@ import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.util.Random;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
+import edu.uw.sudoku_solver.sudoku.SudokuBoard;
 import edu.uw.sudoku_solver.sudoku.SudokuGenerator;
 import edu.uw.sudoku_solver.sudoku.SudokuSolver;
 
@@ -27,8 +26,6 @@ public class Server {
 	 * The port for the server to run on.
 	 */
 	public static final int PORT = Integer.parseInt(System.getenv().getOrDefault("PORT", "8000"));
-
-	public static final Gson builder = new GsonBuilder().setPrettyPrinting().create();
 
 	/**
 	 * Constructor for the Server
@@ -100,13 +97,13 @@ public class Server {
 						}
 					}
 
-					int[][] solution = SudokuSolver.solve(boardArray);
+					SudokuBoard solution = SudokuSolver.solve(new SudokuBoard(boardArray));
 
 					if (solution == null) {
 						throw new Exception();
 					}
 
-					return "{\"board\":" + builder.toJson(solution, solution.getClass()) + "}";
+					return "{\"board\":" + solution.toJson() + "}";
 				}
 			});
 
@@ -114,14 +111,16 @@ public class Server {
 			server.createContext("/api/generate/", new ServerApiHandler() {
 				@Override
 				public String getResponse(JsonObject request) throws Exception {
-					int seed = request.has("seed") ? request.get("seed").getAsInt() : (int) (Math.random() * 10000);
-					int[][] solution = SudokuGenerator.getRandomPuzzle(request.get("difficulty").getAsInt(), 9, new Random(seed), new Random(seed));
+					int seed = request.has("seed") ? request.get("seed").getAsInt()
+							: (int) (Math.random() * 10000);
+					SudokuBoard generated = SudokuGenerator
+							.getRandomPuzzle(request.get("difficulty").getAsInt(), 9, new Random(seed));
 
-					if (solution == null) {
+					if (generated == null) {
 						throw new Exception();
 					}
 
-					return "{\"board\":" + builder.toJson(solution, solution.getClass()) + "}";
+					return "{\"board\":" + generated.toJson() + "}";
 				}
 			});
 
