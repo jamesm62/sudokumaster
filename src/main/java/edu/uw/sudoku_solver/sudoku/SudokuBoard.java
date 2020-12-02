@@ -1,59 +1,71 @@
-package edu.uw.sudoku_solver.sudoku;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 public class SudokuBoard {
-	private int[][] values;
-	private int squareHeight;
-	private int squareWidth;
-
-	public SudokuBoard(int[][] values) {
-		this(values, 3, 3);
-	}
-
-	public SudokuBoard(int[][] values, int squareHeight, int squareWidth) {
-		if (values.length % squareHeight != 0 || values[0].length % squareWidth != 0) {
-			throw new IllegalArgumentException(String.format(
-					"sqaureHeight: %d or squareWidth: %d does not divide evenly into board height: %d or board width: %d",
-					squareHeight, squareWidth, values.length, values[0].length));
+	private int[][] board;
+	private List<Set<Integer>> rows;
+	private List<Set<Integer>> cols;
+	private List<Set<Integer>> squares;
+	private int size;
+	private int squareSize;
+	
+	public SudokuBoard(int[][] board) {
+		this.board = board;
+		rows = new LinkedList<Set<Integer>>();
+		cols = new LinkedList<Set<Integer>>();
+		squares = new LinkedList<Set<Integer>>();
+		this.size = board.length;
+		this.squareSize = (int)Math.sqrt((double)board.length);
+		for (int i = 0; i < board.length; i++) {
+			this.rows.add(new HashSet<Integer>());
+			this.cols.add(new HashSet<Integer>());
+			this.squares.add(new HashSet<Integer>());
 		}
-
-		this.values = values;
-		this.squareHeight = squareHeight;
-		this.squareWidth = squareWidth;
-	}
-
-	@Override
-	public String toString() {
-		String board = "";
-		String rowSeparator = "++";
-
-		for (int i = 0; i < values[0].length; i++) {
-			rowSeparator += "---+" + (i % squareWidth == squareWidth - 1 ? "+" : "");
-		}
-
-		for (int i = 0; i < values.length; i++) {
-			board += rowSeparator + "\n";
-			if (i % squareHeight == 0) {
-				board += rowSeparator + "\n";
+		for (int row = 0; row < board.length; row++) {
+			for (int col = 0; col < board.length; col++) {
+				if (board[row][col] != 0) {
+					rows.get(row).add(board[row][col]);
+					cols.get(col).add(board[row][col]);
+					squares.get(row/this.squareSize*this.squareSize + col/this.squareSize).add(board[row][col]);
+				}
 			}
-			board += "||";
-			for (int j = 0; j < values[0].length; j++) {
-				board += " " + (values[i][j] == 0 ? " " : values[i][j]) + " |"
-						+ (j % squareWidth == squareWidth - 1 ? "|" : "");
-			}
-			board += "\n";
 		}
-		board += rowSeparator + "\n" + rowSeparator;
-
+	}
+	
+	public int[][] getBoard() {
 		return board;
 	}
 
-	public int getValue(int row, int col) {
-		if (row < 0 || col < 0 || row > values.length || col > values[0].length) {
-			throw new IllegalArgumentException(
-					String.format("row: %d or col: %d is out of range 0<=row<=%d, 0<=col<=%d", row, col,
-							values.length, values[0].length));
-		}
+	public int get(int row, int col) {
+		return board[row][col];
+	}
+	
+	public boolean canEnter(int num, int row, int col) {
+		return !this.rows.get(row).contains(num) && !this.cols.get(col).contains(num) && !this.squares.get(row/this.squareSize*this.squareSize + col/this.squareSize).contains(num);
+	}
+	
+	public void set(int num, int row, int col) {
+		this.rows.get(row).add(num);
+		this.cols.get(col).add(num);
+		this.squares.get(row/this.squareSize*this.squareSize + col/this.squareSize).add(num);
+		this.board[row][col] = num;
+	}
+	
+	public void remove(int row, int col) {
+		int numToRemove = this.board[row][col];
+		this.rows.get(row).remove(numToRemove);
+		this.cols.get(col).remove(numToRemove);
+		this.squares.get(row/this.squareSize*this.squareSize + col/this.squareSize).remove(numToRemove);
+		this.board[row][col] = 0;
+	}
 
-		return values[row][col];
+	public int getSize() {
+		return size;
+	}
+
+	public int getSquareSize() {
+		return squareSize;
 	}
 }
