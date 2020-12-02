@@ -1,5 +1,3 @@
-package edu.uw.sudoku_solver.sudoku;
-
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,59 +11,55 @@ public class SudokuGenerator {
 	public static int[][] getRandomPuzzle(int difficulty, int size, Random difficultyAssessor, Random numGenerator) {
 		int[][] randomPuzzle = new int[size][size];
 		
-		List<Set<Integer>> rows = new LinkedList<Set<Integer>>();
-		List<Set<Integer>> cols = new LinkedList<Set<Integer>>();
-		List<Set<Integer>> squares = new LinkedList<Set<Integer>>();
-		for (int i = 0; i < size; i++) {
-			rows.add(new HashSet<Integer>());
-			cols.add(new HashSet<Integer>());
-			squares.add(new HashSet<Integer>());
-		}
-		return getRandomPuzzle(0, 0, rows, cols, squares, randomPuzzle, (double)difficulty/20.0 + 0.3, (int)Math.sqrt((double)size), difficultyAssessor, numGenerator);
+		SudokuBoard board = new SudokuBoard(randomPuzzle);
+		SudokuBoard randomSolvedBoard = getRandomSolvedPuzzle(0, 0, board, numGenerator);
+		return getRandomUnsolvedPuzzle(0, 0, randomSolvedBoard, (double)difficulty/10.0, difficultyAssessor).getBoard();
 	}
 	
 	// helper method for getRandomPuzzle() that recursively constructs a random sudoku puzzle
-	public static int[][] getRandomPuzzle(int row, int col, List<Set<Integer>> rows, List<Set<Integer>> cols, List<Set<Integer>> squares, int[][] currentPuzzle, double difficulty, int squareSize, Random difficultyAssessor, Random numGenerator) {
-		if (row == currentPuzzle.length) {
-			return currentPuzzle;
-		} else if (col == currentPuzzle.length) {
-			return getRandomPuzzle(row + 1, 0, rows, cols, squares, currentPuzzle, difficulty, squareSize, difficultyAssessor, numGenerator);
-		} else if (currentPuzzle[row][col] != 0) {
-			return getRandomPuzzle(row, col + 1, rows, cols, squares, currentPuzzle, difficulty, squareSize, difficultyAssessor, numGenerator);
+	private static SudokuBoard getRandomSolvedPuzzle(int row, int col, SudokuBoard currentBoard, Random numGenerator) {
+		if (row == currentBoard.getSize()) {
+			return currentBoard;
+		} else if (col == currentBoard.getSize()) {
+			return getRandomSolvedPuzzle(row + 1, 0, currentBoard, numGenerator);
 		} else {
-			int[][] solution = null;
-			if (difficultyAssessor.nextDouble() > difficulty) {
-				while (solution == null) {
-					int randomNum;
-					int count = 0;
-					do {
-						if (count > 50) {
-							solution = null;
-						}
-						randomNum = (int)Math.round(numGenerator.nextDouble()*((double)currentPuzzle.length - 1.0) + 1.0);
-						count++;
-					} while (rows.get(row).contains(randomNum) || cols.get(col).contains(randomNum) || squares.get(row/squareSize*squareSize + col/squareSize).contains(randomNum));
-					
-					currentPuzzle[row][col] = randomNum;
-					rows.get(row).add(randomNum);
-					cols.get(col).add(randomNum);
-					squares.get(row/squareSize*squareSize + col/squareSize).add(randomNum);
-					solution = getRandomPuzzle(row, col + 1, rows, cols, squares, currentPuzzle, difficulty, squareSize, difficultyAssessor, numGenerator);
-					rows.get(row).remove(randomNum);
-					cols.get(col).remove(randomNum);
-					squares.get(row/squareSize*squareSize + col/squareSize).remove(randomNum);
+			SudokuBoard solution = null;
+			
+			while (solution == null) {
+				int randomNum = 0;
+				int count = 0;
+				boolean foundNum = true;
+				do {
+					if (count > 50) {
+						foundNum = false;
+						break;
+					}
+					randomNum = (int)Math.round(numGenerator.nextDouble()*((double)currentBoard.getSize() - 1.0) + 1.0);
+					count++;
+				} while (!currentBoard.canEnter(randomNum, row, col));
+				if (foundNum) {
+					currentBoard.set(randomNum, row, col);
 				}
-			} else {
-				solution = getRandomPuzzle(row, col + 1, rows, cols, squares, currentPuzzle, difficulty, squareSize, difficultyAssessor, numGenerator);
+				solution = getRandomSolvedPuzzle(row, col + 1, currentBoard, numGenerator);
 			}
 			
 			return solution;
 		}
 	}
+
+	private static SudokuBoard getRandomUnsolvedPuzzle(int row, int col, SudokuBoard currentBoard, double difficulty, Random difficultyAssessor) {
+		if (row == currentBoard.getSize()) {
+			return currentBoard;
+		} else if (col == currentBoard.getSize()) {
+			return getRandomUnsolvedPuzzle(row + 1, 0, currentBoard, difficulty, difficultyAssessor);
+		} else if (difficultyAssessor.nextDouble() < difficulty) {
+			currentBoard.set(0, row, col);
+		}
+		return getRandomUnsolvedPuzzle(row, col + 1, currentBoard, difficulty, difficultyAssessor);
+	}
 	
 	public static void main(String[] args) {
 		int[][] random = getRandomPuzzle(8, 9, new Random(), new Random());
-		
 		if (random != null) {
 			for (int i = 0; i < random.length; i++) {
 				for (int e = 0; e < random.length; e++) {
@@ -78,7 +72,6 @@ public class SudokuGenerator {
 		}
 		
 		System.out.println();
-		
 		int[][] randomSolved = SudokuSolver.solve(random);
 		
 		if (randomSolved != null) {
@@ -91,5 +84,6 @@ public class SudokuGenerator {
 		} else {
 			System.out.println("No solution");
 		}
+		
 	}
 }
