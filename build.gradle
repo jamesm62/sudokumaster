@@ -30,3 +30,13 @@ dependencies {
 repositories {
     jcenter()
 }
+
+jar {
+    manifest {
+        attributes "Main-Class": "edu.uw.sudoku_solver.Main"
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
