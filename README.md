@@ -24,11 +24,11 @@
 The webpage exposes an api that can be used in other http request projects, not nessicarily needing a webpage. All api requests are sent to `page/api/<api_request>/`. If there is a server error, the response will be `{"err": "Error processing request"}`
 
 ### Solving API `page/api/solve/`
-- A POST Request. It requires a JSON Object with a `board` corresponding to a square integer matrix. ex. `{"board": [[1,2,3,4],[0,0,0,0],[0,0,0,0],[0,0,0,0]]}`
+- A `POST` request. It requires a JSON Object with a `board` corresponding to a square integer matrix. ex. `{"board": [[1,2,3,4],[0,0,0,0],[0,0,0,0],[0,0,0,0]]}`
 - In the board array, all zeros correspond to an empty cell, and numbers greater than zero are already solved numbers.
 - This responds with a JSON Object, once again with a board corresponding to a square integer matrix. ex. `{"board": [[1,2,3,4],[3,4,1,2],[2,1,4,3],[4,3,2,1]]}`
 
 ### Generating API `page/api/generate/`
-- A POST request. This requires a JSON Object with a `difficulty` as an integer. There is an optional value in the POST request, `seed`, which is an integer for the seed of the board. ex `{"difficulty": 5 <, "seed" : 1234> }` 
+- A `POST` request. This requires a JSON Object with a `difficulty` as an integer. There is an optional value in the POST request, `seed`, which is an integer for the seed of the board. ex `{"difficulty": 5 <, "seed" : 1234> }` 
 - This responds with a JSON Object, with a `board` that has empty squares filled with zero, and non-empty squares are filled with numbers. ex. `{"board": [[1,2,3,4],[0,0,0,0],[0,0,0,0],[0,0,0,0]]}`
 
