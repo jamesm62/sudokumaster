@@ -6,6 +6,6 @@
 4) Visit `localhost:8000` on your web browser. press enter or ctrl+c to terminate the server.
 ## Use
 - To use the solver, simply input the puzzle you want to solve and it will show a solution!
-- To use the generator, click generate to see a randomly generated puzzle!
+- To use the generator, click generate to see a randomly generated puzzle! You can change the difficulty. Setting a seed will generate a puzzle based on that seed, letting your friend to try and solve the same puzzle.
 - Use the link at the top anytime to return to the homepage. 
 
