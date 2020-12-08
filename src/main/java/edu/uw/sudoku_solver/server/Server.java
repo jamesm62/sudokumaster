@@ -89,18 +89,15 @@ public class Server {
 			server.createContext("/api/solve/", new ServerApiHandler() {
 				@Override
 				public String getResponse(JsonObject request) throws Exception {
-					JsonArray jsonBoardArray = request.get("board").getAsJsonArray();
-					int[][] boardArray = new int[9][9];
-					for (int i = 0; i < 9; i++) {
-						for (int j = 0; j < 9; j++) {
-							boardArray[i][j] = jsonBoardArray.get(i).getAsJsonArray().get(j).getAsInt();
-						}
+					if (!request.has("board")) {
+						throw new Exception("No board in request");
 					}
 
-					SudokuBoard solution = SudokuSolver.solve(new SudokuBoard(boardArray));
+					JsonArray jsonBoardArray = request.get("board").getAsJsonArray();
+					SudokuBoard solution = SudokuSolver.solve(new SudokuBoard(jsonBoardArray));
 
 					if (solution == null) {
-						throw new Exception();
+						throw new Exception("Unable to solve board");
 					}
 
 					return "{\"board\":" + solution.toJson() + "}";
@@ -113,11 +110,21 @@ public class Server {
 				public String getResponse(JsonObject request) throws Exception {
 					int seed = request.has("seed") ? request.get("seed").getAsInt()
 							: (int) (Math.random() * 10000);
-					SudokuBoard generated = SudokuGenerator
-							.getRandomPuzzle(request.get("difficulty").getAsInt(), 9, new Random(seed));
+
+					if (!request.has("difficulty")) {
+						throw new Exception("No difficulty in request");
+					}
+
+					if (!request.has("size")) {
+						throw new Exception("No size in request");
+					}
+
+					SudokuBoard generated = SudokuGenerator.getRandomPuzzle(
+							request.get("difficulty").getAsInt(), request.get("size").getAsInt(),
+							new Random(seed));
 
 					if (generated == null) {
-						throw new Exception();
+						throw new Exception("Unable to generate board");
 					}
 
 					return "{\"board\":" + generated.toJson() + "}";

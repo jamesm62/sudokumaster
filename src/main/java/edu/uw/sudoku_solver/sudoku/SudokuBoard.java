@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 
 public class SudokuBoard {
 	public static final Gson BUILDER = new GsonBuilder().setPrettyPrinting().create();
@@ -40,6 +41,10 @@ public class SudokuBoard {
 				}
 			}
 		}
+	}
+
+	public SudokuBoard(JsonArray jsonBoardArray) {
+		this(BUILDER.fromJson(jsonBoardArray, int[][].class));
 	}
 
 	public int[][] getBoard() {

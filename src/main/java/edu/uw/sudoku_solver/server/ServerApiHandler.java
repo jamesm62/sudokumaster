@@ -8,8 +8,8 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 /**
- * A template for API requests to the server. It automatically parses the JSON Post request and handles sending the data
- * and errors
+ * A template for API requests to the server. It automatically parses the JSON
+ * Post request and handles sending the data and errors
  */
 public abstract class ServerApiHandler implements HttpHandler {
 
@@ -21,31 +21,32 @@ public abstract class ServerApiHandler implements HttpHandler {
 
 			String returnValue = getResponse(json);
 
-			try {
-				byte[] bytes = returnValue.getBytes();
-				httpExchange.sendResponseHeaders(200, bytes.length);
-				httpExchange.getResponseBody().write(bytes);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			respondWithData(httpExchange, returnValue);
 		} catch (Exception exception) {
-			try {
-				byte[] bytes = ("{\"err\":\"Error processing request\"}").getBytes();
-				httpExchange.sendResponseHeaders(200, bytes.length);
-				httpExchange.getResponseBody().write(bytes);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			String error = exception.getMessage() == null ? "Error processing request"
+					: exception.getMessage();
+			respondWithData(httpExchange, "{\"err\":\"" + error + "\"}");
 		}
 		httpExchange.close();
 	}
 
+	protected void respondWithData(HttpExchange httpExchange, String response) {
+		try {
+			byte[] bytes = response.getBytes();
+			httpExchange.sendResponseHeaders(200, bytes.length);
+			httpExchange.getResponseBody().write(bytes);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Get the response for the API call
+	 * 
 	 * @param request The JSON request for the call
 	 * @return The string to return to the client
-	 * @throws Exception Throw an exception if there are any issues with the request as this sends an error to the
-	 * client
+	 * @throws Exception Throw an exception if there are any issues with the request
+	 *                   as this sends an error to the client
 	 */
 	public abstract String getResponse(JsonObject request) throws Exception;
 }
