@@ -16,6 +16,14 @@
 			<button id="solve" onclick="solve()">SOLVE</button>
 			<button id="clear" onclick="clearBoard()">RESET BOARD</button>
 			<p id="error" style="color:red"></p>
+			<label>Select size of board:
+				<select id="boardsize">
+					<option value="3">9x9 (standard)</option>
+					<option value="2">4x4</option>
+					<option value="4">16x16</option>
+				</select>
+				<button onclick="resizeBoard()">Resize Board</button>
+			</label>
 		</div>
 	</body>
 	<script src="js/sudoku.js"></script>

@@ -50,4 +50,8 @@ function clearBoard(){
     }
 }
 
+function resizeBoard(){
+	initializeBoard(document.getElementById("boardsize").value);
+}
+
 initializeBoard(3);
