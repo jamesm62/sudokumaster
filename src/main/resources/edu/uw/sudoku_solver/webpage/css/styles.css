@@ -42,3 +42,21 @@ input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none; 
     margin: 0; 
 }
+
+a {
+	background-color: green;
+	box-shadow: 0 5px 0 darkgreen;
+	color: white;
+	padding: 10px 20px;
+	position: relative;
+	text-decoration: none;
+  }
+  
+  a:hover {
+	background-color: #00b40fc7;
+  }
+  
+  a:active {
+	box-shadow: none;
+	top: 5px;
+  }
