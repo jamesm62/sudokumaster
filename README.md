@@ -1,5 +1,8 @@
 # Sudoku Master
 
+## User Guide
+ - Watch this [video](https://youtu.be/C-YMuTbtYEs) on a user guide for this project.
+
 ## Setup
 1) Download files. You can make a folder and clone the project or download and extract the zip. 
 2) In cmd, navigate to the folder with the files.

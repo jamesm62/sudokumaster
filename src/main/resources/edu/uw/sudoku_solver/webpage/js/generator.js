@@ -22,6 +22,7 @@ function generate(){
                 var cursquare = inputboard.rows[i].cells[j];
                 cursquare.childNodes[0].value = (solved[i][j] == 0 ? "" : solved[i][j]);
                 cursquare.style.backgroundColor = BACKGROUND_COLOR;
+                cursquare.childNodes[0].readOnly = false;
                 if(solved[i][j] != 0) {
                     cursquare.style.backgroundColor = "gray";
                     cursquare.childNodes[0].readOnly = true;
