@@ -12,7 +12,6 @@ import com.sun.net.httpserver.HttpHandler;
  * Post request and handles sending the data and errors
  */
 public abstract class ServerApiHandler implements HttpHandler {
-
 	@Override
 	public void handle(HttpExchange httpExchange) throws IOException {
 		try {
@@ -30,6 +29,12 @@ public abstract class ServerApiHandler implements HttpHandler {
 		httpExchange.close();
 	}
 
+	/**
+	 * Sends the response along httpExchange
+	 * 
+	 * @param httpExchange The server/client exchange
+	 * @param response     The data to send
+	 */
 	protected void respondWithData(HttpExchange httpExchange, String response) {
 		try {
 			byte[] bytes = response.getBytes();

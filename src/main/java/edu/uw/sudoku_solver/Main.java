@@ -2,6 +2,10 @@ package edu.uw.sudoku_solver;
 
 import edu.uw.sudoku_solver.server.Server;
 
+/**
+ * Entry point for the program
+ *
+ */
 public class Main {
 	public static void main(String[] args) throws Exception {
 		System.out.println("Program starting...");

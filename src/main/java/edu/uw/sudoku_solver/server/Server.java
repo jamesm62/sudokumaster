@@ -68,11 +68,6 @@ public class Server {
 				sendWebpageFile(httpExchange, "generator/generator.html", "text/html;charset=utf-8");
 			});
 
-			// add the versus page
-			server.createContext("/versus", httpExchange -> {
-				sendWebpageFile(httpExchange, "versus/versus.html", "text/html;charset=utf-8");
-			});
-
 			// Add CSS files
 			server.createContext("/css/", httpExchange -> {
 				sendWebpageFile(httpExchange, httpExchange.getRequestURI().getPath(),

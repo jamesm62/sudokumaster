@@ -2,20 +2,35 @@ package edu.uw.sudoku_solver.sudoku;
 
 import java.util.Random;
 
+/**
+ * Generates Sudoku boards
+ *
+ */
 public class SudokuGenerator {
-	// pre: 1. difficulty must be between 0 and 10 and represents the desired
-	// difficulty of the sudoku puzzle
-	// 2. size must be a perfect square and represents the desired number of rows
-	// and columns in the puzzle
-	// post: returns a 2D array with the data for a random unsolved sudoku puzzle
+	/**
+	 * Generates a sudoku board from the given size, difficulty, and random number
+	 * 
+	 * @param difficulty The difficult of the board from 1 - 9
+	 * @param size       The size of the board (should be a square number)
+	 * @param random     The random to generate the board with for repeated
+	 *                   generations
+	 * @return A randomly generated board
+	 */
 	public static SudokuBoard getRandomPuzzle(int difficulty, int size, Random random) {
 		SudokuBoard board = new SudokuBoard(new int[size][size]);
 		SudokuBoard randomSolvedBoard = getRandomSolvedPuzzle(0, 0, board, random);
 		return getRandomUnsolvedPuzzle(0, 0, randomSolvedBoard, difficulty / 10.0, random);
 	}
 
-	// helper method for getRandomPuzzle() that recursively constructs a random
-	// sudoku puzzle
+	/**
+	 * Recursive helper method to generate a random solved puzzle
+	 * 
+	 * @param row          The current row
+	 * @param col          The current col
+	 * @param currentBoard The current board state
+	 * @param numGenerator The random number generator
+	 * @return A randomly generated, solved board
+	 */
 	private static SudokuBoard getRandomSolvedPuzzle(int row, int col, SudokuBoard currentBoard,
 			Random numGenerator) {
 		if (row == currentBoard.getSize()) {
@@ -48,6 +63,16 @@ public class SudokuGenerator {
 		}
 	}
 
+	/**
+	 * Randomly removes parts of the board to create an unsolved borad
+	 * 
+	 * @param row                The current row
+	 * @param col                The current col
+	 * @param currentBoard       The current board
+	 * @param difficulty         The difficulty
+	 * @param difficultyAssessor The random generator for the random removal
+	 * @return A board with random parts removed
+	 */
 	private static SudokuBoard getRandomUnsolvedPuzzle(int row, int col, SudokuBoard currentBoard,
 			double difficulty, Random difficultyAssessor) {
 		if (row == currentBoard.getSize()) {
@@ -58,23 +83,5 @@ public class SudokuGenerator {
 			currentBoard.set(0, row, col);
 		}
 		return getRandomUnsolvedPuzzle(row, col + 1, currentBoard, difficulty, difficultyAssessor);
-	}
-
-	public static void main(String[] args) {
-		SudokuBoard random = getRandomPuzzle(8, 9, new Random());
-		if (random != null) {
-			System.out.println(random);
-		} else {
-			System.out.println("No solution");
-		}
-
-		System.out.println();
-		SudokuBoard randomSolved = SudokuSolver.solve(random);
-
-		if (randomSolved != null) {
-			System.out.println(randomSolved);
-		} else {
-			System.out.println("No solution");
-		}
 	}
 }
