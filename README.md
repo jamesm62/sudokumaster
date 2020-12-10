@@ -24,7 +24,7 @@
 - Setting a seed will generate a puzzle based on that seed, letting your friend to try and solve the same puzzle.
 
 ## API
-The webpage exposes an api that can be used in other http request projects, not nessicarily needing a webpage. All api requests are sent to `page/api/<api_request>/`. If there is a server error, the response will be `{"err": "Error processing request"}`
+The webpage exposes an api that can be used in other http request projects, not necessarily needing a webpage. All api requests are sent to `page/api/<api_request>/`. If there is a server error, the response will be `{"err": "Error processing request"}`
 
 ### Solving API `page/api/solve/`
 - A `POST` request. It requires a JSON Object with a `board` corresponding to a square integer matrix. ex. `{"board": [[1,2,3,4],[0,0,0,0],[0,0,0,0],[0,0,0,0]]}`
